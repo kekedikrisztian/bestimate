@@ -54,7 +54,7 @@ class Simulation extends React.Component {
             stringency: undefined,
             symbol: undefined,
             symbols: [
-                /*{symbol: "CBL", title: "CBL", checked: true},
+                {symbol: "CBL", title: "CBL", checked: true},
                 {symbol: "PEI", title: "PEI", checked: true},
                 {symbol: "SMHD", title: "SMHD", checked: true},
                 {symbol: "KREF", title: "KREF", checked: true},
@@ -77,9 +77,9 @@ class Simulation extends React.Component {
                 {symbol: "CUBE", title: "CUBE", checked: true},
                 {symbol: "NNN", title: "NNN", checked: true},
                 {symbol: "REG", title: "REG", checked: true},
-                {symbol: "ADC", title: "ADC", checked: true},*/
+                {symbol: "ADC", title: "ADC", checked: true},
 
-                {symbol: "T", title: "AT&T", checked: true},
+                /*{symbol: "T", title: "AT&T", checked: true},
                 {symbol: "BEP", title: "Brookfield Renewable Partners", checked: true},
                 {symbol: "IRM", title: "Iron Mountain Incorporated", checked: true},
                 {symbol: "JNJ", title: "Johnson & Johnson", checked: true},
@@ -108,7 +108,7 @@ class Simulation extends React.Component {
                 {symbol: "GPS", title: "gps", checked: true},
                 {symbol: "CMI", title: "cmi", checked: true},
                 {symbol: "FLO", title: "flo", checked: true},
-                {symbol: "DIS", title: "dis", checked: true}
+                {symbol: "DIS", title: "dis", checked: true}*/
             ],
             pieceOfStock: [],
             lastDividends: [],
@@ -494,7 +494,7 @@ class Simulation extends React.Component {
                         this.state.dividendAmount = this.state.dividendAmount + this.state.allDividend[i][j] * this.state.pieceOfStock[key].piece;
 
                         this.state.pieceOfStock[key].valueNow = actualPrice;
-                        if(this.state.allDividend[i][j] !== 0) {
+                        /*if(this.state.allDividend[i][j] !== 0) {
                             console.log(
                                 "dátum: " + this.state.allOpening[i][0] +
                                 ", részvény: " + this.state.pieceOfStock[key].symbol +
@@ -504,7 +504,7 @@ class Simulation extends React.Component {
                                 ", összesen: " + this.state.pieceOfStock[key].piece*this.state.allDividend[i][j] +
                                 ", eddigi összes: " + this.state.dividendAmount
                             );
-                        }
+                        }*/
 
                         if(!myCapitalWithDividend[i]) {
                             myCapitalWithDividend[i] = [];
@@ -584,106 +584,6 @@ class Simulation extends React.Component {
         console.log(this.state.yieldPerMonth * 12);
         this.setState({calculated : true});
     }
-
-    showDiagramFunc = (e) => {
-        var capital = this.state.startCapital;
-        var lastValue = this.state.stockData[this.state.stockData.length -1][1];
-        var stockBit = Math.floor(capital / lastValue);
-        var allDividend = 0;
-        var dividendValue = 0;
-        var dividend = 0;
-        var container = 0;
-        var actualDividend = 0;
-        var firstDividend = false;
-        var avg = 0;
-        var sum = 0;
-
-        e.preventDefault();
-        this.setState({showDiagram: true});
-
-        console.log(capital);
-        console.log("legutóbbi dátum" + lastValue);
-        console.log("ennyi részvényt tudunk venni:" + stockBit);
-        capital = capital - lastValue * stockBit;
-        console.log(capital);
-
-        for (var i=1; i<this.stockDatas.length; i++) {
-
-            if ((this.stockDatas[i][0] < this.state.startInterval)) {
-                avg=avg+this.stockDatas[i][1];
-                sum++;
-            }
-
-            if ((this.stockDatas[i][0] === this.state.startInterval)) {
-                avg = avg / sum;
-            }
-
-            if ((this.stockDatas[i][0] < this.state.startInterval) || (this.stockDatas[i][0] > this.state.endInterval)) {
-                this.stockDatas.splice(i,1);
-                this.dividends.splice(i,1);
-                this.dividendDatas.splice(i,1);
-                this.capitalDifference.splice(i,1);
-                this.dividendPerShare.splice(i,1);
-                this.myCapital.splice(i,1);
-                i--;
-            }
-        }
-
-        console.log(avg);
-
-        for (var i=1; i < this.dividends.length; i++) {
-            allDividend = allDividend + this.dividends[i][1];
-            console.log(allDividend);
-            container = this.dividends[i][1];
-            this.dividends[i][1] = dividendValue + this.dividends[i][1];
-            dividendValue = dividendValue + container;
-        }
-
-        for (var i=1; i < this.dividends.length; i++) {
-            dividend = this.dividends[i][1];
-            if(dividend > 0) {
-                this.onlyPaidDateDividend.push(this.dividends[i]);
-            }
-            dividend = dividend + this.dividends[i];
-        }
-        this.onlyPaidDateDividend.unshift(['date', '$']);
-        console.log(this.dividends);
-
-        for (var i=1; i < this.myCapital.length; i++) {
-            this.myCapital[i][1] = (this.myCapital[i][1] + this.dividends[i][1]);
-        }
-        console.log(this.myCapital);
-
-        for (var i=1; i < this.capitalDifference.length; i++) {
-            this.capitalDifference[i][2] = this.myCapital[i][1];
-        }
-
-        for (var i=1; i < this.dividendPerShare.length; i++) {
-            if (this.dividendDatas[i][1] > 0) {
-                if (firstDividend === true){
-                    if (actualDividend*2 < this.dividendDatas[i][1]) {
-                        actualDividend = actualDividend;
-                    }
-                    else {
-                        actualDividend = this.dividendDatas[i][1];
-                    }
-                }
-                else {
-                    actualDividend = this.dividendDatas[i][1];
-                }
-
-                firstDividend = true;
-            }
-
-            if (actualDividend === 0) {
-                this.dividendPerShare[i][1] = 0;
-            }
-
-            else {
-                this.dividendPerShare[i][1] = actualDividend / this.dividendPerShare[i][1];
-            }
-        }
-    };
 
     setStringency = (e) => {
         this.setState({stringency : e.target.value});
@@ -1161,6 +1061,27 @@ class Simulation extends React.Component {
                             </div>
                         </Grid>
 
+
+                        <Grid item xs={12}>
+                            <div className={"my-pretty-chart-container"}>
+                                <Chart
+                                    width={'1400px'}
+                                    height={'600px'}
+                                    chartType="LineChart"
+                                    data={this.state.myCapitalCompare}
+                                    options={{
+                                        hAxis: {
+                                            title: 'Time',
+                                        },
+                                        vAxis: {
+                                            title: 'Dividends',
+                                        },
+                                    }}
+                                    rootProps={{'data-testid': '1'}}
+                                />
+                            </div>
+                        </Grid>
+
                         <Grid item xs={8}>
                             <div className="p-50">
                                 <div className="table-title">
@@ -1196,25 +1117,6 @@ class Simulation extends React.Component {
                                         </TableBody>
                                     </Table>
                                 </Paper>
-                            </div>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <div className={"my-pretty-chart-container"}>
-                                <Chart
-                                    width={'1400px'}
-                                    height={'600px'}
-                                    chartType="LineChart"
-                                    data={this.state.myCapitalCompare}
-                                    options={{
-                                        hAxis: {
-                                            title: 'Time',
-                                        },
-                                        vAxis: {
-                                            title: 'Dividends',
-                                        },
-                                    }}
-                                    rootProps={{'data-testid': '1'}}
-                                />
                             </div>
                         </Grid>
                     </div>
