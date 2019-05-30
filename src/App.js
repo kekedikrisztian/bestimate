@@ -22,8 +22,6 @@ import {
   TextField
 } from "@material-ui/core";
 
-import Home from "./components/Home"
-import SimpleMenu from "./components/SimpleMenu"
 import Simulation from "./components/Simulation"
 import './App.css';
 
